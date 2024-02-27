@@ -8,24 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
-
-func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
-	totalCount := 4
-	req := httptest.NewRequest("GET", "/cafe?count=9&city=moscow", nil)
-
-	responseRecorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(mainHandle)
-	handler.ServeHTTP(responseRecorder, req)
-
-	statusCode := responseRecorder.Code
-	require.NotEqual(t, 0, statusCode)
-	require.Equal(t, http.StatusOK, statusCode)
-
-	responseBody := strings.Split(responseRecorder.Body.String(), ",")
-	assert.Equal(t, totalCount, len(responseBody))
-}
 
 func getCountAndCity(req *http.Request) *httptest.ResponseRecorder {
 	responseRecorder := httptest.NewRecorder()
@@ -34,12 +17,13 @@ func getCountAndCity(req *http.Request) *httptest.ResponseRecorder {
 	return responseRecorder
 }
 
+// m
 func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
 	totalCount := 4
 	count := 5
 	city := "moscow"
 	responseRecorder := getCountAndCity(httptest.NewRequest(http.MethodGet, fmt.Sprintf("/cafe?count=%d&city=%s", count, city), nil))
-
+	assert.Equal(t, http.StatusOK, responseRecorder.Code)
 	assert.Equal(t, []byte(strings.Join(cafeList["moscow"][:totalCount], ",")), responseRecorder.Body.Bytes())
 
 }
